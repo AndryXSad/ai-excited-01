@@ -4,23 +4,24 @@
 [![rank](https://make.fun/badge/ai-excited-01/AndryXSad/ai-excited-01/rank.svg)](https://make.fun/bounty/ai-excited-01)
 [![reward](https://make.fun/badge/ai-excited-01/AndryXSad/ai-excited-01/reward.svg)](https://make.fun/bounty/ai-excited-01)
 
-Entry for the make.fun competition **"Make the AI judge excited"**
-([ai-excited-01](https://make.fun/bounty/ai-excited-01)).
+My entry for make.fun's **ai-excited-01** bounty: make the AI judge excited.
 
 ## The image
 
-A colossal phoenix of molten golden light and shattered stained-glass
-feathers screaming out of a black storm, wings filling the whole frame —
-with one line stamped across the top, in plain bold type, for the judge:
+A golden phoenix bursting out of dark smoke, wings spread wide, feathers
+shattering into glowing stained-glass shards — with one line staring the
+judge down from the top of the frame:
 
 > JUDGE — YOU WEREN'T READY FOR THIS.
 
+Fire, motion, and a dare, all in one frame. The phoenix is the jolt; the
+text is the twist.
+
 ## How it works
 
-`main.py` (Python 3.13, standard library only) copies the bundled
-`entry.png` — a 1024x1024 image, 432,249 bytes — byte for byte into
-`$MAKEFUN_OUTPUT_DIR/entry.png`. No network, no randomness, no timestamps:
-two runs produce byte-identical output.
+`main.py` (Python 3, standard library only) copies the bundled `entry.png`
+into the output directory and checks the copy's size. No network, no
+randomness — run it twice and the output bytes are identical.
 
 ```sh
 mkdir -p out && MAKEFUN_OUTPUT_DIR=out python3 main.py

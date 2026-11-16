@@ -1,31 +1,39 @@
-"""ai-excited-01 entry: copy the bundled image to the output directory.
+"""Entry program for the ai-excited-01 bounty.
 
-The image (entry.png) sits next to this file in the repository. This
-program copies it, byte for byte, to $MAKEFUN_OUTPUT_DIR/entry.png.
-
-Deterministic by construction: no timestamps, no randomness, no network,
-standard library only. Both runs write the exact same bytes.
+Copies the bundled entry.png next to this file into the output directory
+named by MAKEFUN_OUTPUT_DIR (falling back to /output), then checks the
+copy's size so a truncated write is caught immediately. Standard library
+only, no network, and fully deterministic: the same input bytes always
+produce the same output bytes.
 """
 
 import os
 import shutil
 
-HERE = os.path.dirname(os.path.abspath(__file__))
+SOURCE_NAME = "entry.png"
+MAX_BYTES = 1048576
+
+
+def output_path():
+    """Resolve the destination path for the entry image."""
+    out_dir = os.environ.get("MAKEFUN_OUTPUT_DIR", "/output")
+    return os.path.join(out_dir, SOURCE_NAME)
 
 
 def main():
-    out_dir = os.environ.get("MAKEFUN_OUTPUT_DIR", "/output")
-    os.makedirs(out_dir, exist_ok=True)
-    src = os.path.join(HERE, "entry.png")
-    dst = os.path.join(out_dir, "entry.png")
-    if not os.path.isfile(src):
-        raise FileNotFoundError("bundled image missing: %s" % src)
-    shutil.copyfile(src, dst)
-    # Fail loudly instead of silently shipping a truncated copy: the
-    # grader runs this program twice and both runs must write the
-    # same bytes, so a short write here must never pass unnoticed.
-    if os.path.getsize(dst) != os.path.getsize(src):
-        raise IOError("copy size mismatch: %s vs %s" % (dst, src))
+    here = os.path.dirname(os.path.abspath(__file__))
+    source = os.path.join(here, SOURCE_NAME)
+    if not os.path.isfile(source):
+        raise SystemExit(f"missing {SOURCE_NAME} next to main.py; cannot build entry")
+    dest = output_path()
+    os.makedirs(os.path.dirname(dest), exist_ok=True)
+    shutil.copyfile(source, dest)
+    copied = os.path.getsize(dest)
+    if copied > MAX_BYTES:
+        raise SystemExit(f"entry.png is {copied} bytes, over the 1 MiB limit")
+    if copied != os.path.getsize(source):
+        raise SystemExit("copy size differs from source; output is incomplete")
+    print(f"wrote {dest} ({copied} bytes)")
 
 
 if __name__ == "__main__":
